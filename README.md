@@ -1,7 +1,5 @@
 # Cryptography
 
-https://wandbox.org/permlink/MXMZgvOdMboYse7R
-
 Long integer arithmetic is implemented:
 1) Operations: addition, subtraction, multiplication, division with the remainder, raising to a natural degree
 2) Comparison of numbers (<,>, =)
