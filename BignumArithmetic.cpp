@@ -1,3 +1,4 @@
+#include <climits>
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -47,12 +48,8 @@ valarray<Complex> pow(valarray<Complex> a, int64_t power_) {
 }
 
 uint64_t random(uint64_t a = 0, uint64_t b = numeric_limits<uint64_t>::max()) {
-	return uniform_int_distribution<mt19937::result_type>(a, b)
-		(
-		(mt19937&)mt19937(
-			random_device()()
-		)
-			);
+	auto tmp = mt19937(random_device()());
+	return uniform_int_distribution<mt19937::result_type>(a, b)(tmp);
 }
 class LNumHasher;
 
@@ -114,7 +111,7 @@ public:
 		vector<uint64_t> parts(diff.parts.size());
 		for_each(parts.begin(), prev(parts.end()), [](uint64_t& p) {
 			p = ::random(0, base_max());
-			});
+		});
 		uint8_t carry = parts.size() > 1 ? LNum(vector(diff.parts.begin(), prev(diff.parts.end()))) < LNum(vector(parts.begin(), prev(parts.end()))) : 0;
 		parts[parts.size() - 1] = ::random(0, diff.parts[parts.size() - 1] - carry);
 		remove_zeros(parts);
@@ -735,7 +732,7 @@ vector<LNum> ro_pollard(LNum n) {
 LNum babystep_giantstep(LNum g, LNum h, LNum p) {
 	LNum m = LNum::sqrt(p);
 	if (p - m * m > 0) m += 1;
-	
+
 	auto table = unordered_map<LNum, LNum, LNumHasher>();
 	LNum e = 1;
 	for (LNum i = 0; i < m; i += 1) {
@@ -747,16 +744,16 @@ LNum babystep_giantstep(LNum g, LNum h, LNum p) {
 	e = h;
 	for (LNum i = 0; i < m; i += 1) {
 		if (auto it = table.find(e); it != table.end() && it->second != 0) {
-			return { i*m + it->second };
+			return { i * m + it->second };
 		}
 		e = (e * factor) % p;
 	}
-	
+
 	return 0;
 }
 
 template <typename T>
-vector<T>& unique(vector<T>& v) {
+vector<T> unique(vector<T> v) {
 	sort(v.begin(), v.end());
 	v.erase(unique(v.begin(), v.end()), v.end());
 	return v;
@@ -765,7 +762,7 @@ vector<T>& unique(vector<T>& v) {
 // 3. https://stackoverflow.com/a/52263174/8390594
 LNum totient(LNum n) {
 	if (n == 1) return 1;
-	for (LNum& factor : (vector<LNum>)unique((vector<LNum>&)ro_pollard(n))) {
+	for (LNum& factor : unique(ro_pollard(n))) {
 		n -= n / factor;
 	}
 	return n;
@@ -877,7 +874,7 @@ LNum gen_key(LNum q) {
 	LNum key = 0;
 	while (gcd(q, key = LNum::random(LNum(10) ^ 20, q)) != 1) {}
 	return key;
-}	
+}
 
 tuple<vector<LNum>, LNum> encrypt(string msg, LNum q, LNum h, LNum g) {
 	vector<LNum> en_msg(msg.size());
@@ -891,7 +888,7 @@ tuple<vector<LNum>, LNum> encrypt(string msg, LNum q, LNum h, LNum g) {
 	for (size_t i = 0; i < msg.size(); ++i) {
 		en_msg[i] = s * msg[i];
 	}
-			
+
 	return make_tuple(en_msg, p);
 }
 
@@ -902,7 +899,7 @@ string decrypt(vector<LNum> en_msg, LNum p, LNum key, LNum q) {
 		dr_msg += (en_msg[i] / h).to_int();
 	}
 	return dr_msg;
-}	
+}
 
 
 int main() {
@@ -921,7 +918,7 @@ int main() {
 	tie(en_msg, p) = encrypt(message, q, h, g);
 
 	cout << "Decripted message: " << decrypt(en_msg, p, key, q) << endl;
-	
+
 	// Tests for LNum class
 	//cout << LNum("24523748428").pow_mod(LNum("6500000"), LNum("98723459723")) << '\n';  //88398031434 3007310280
 	//cout << "123456789876543212345678987654321 * 159753579515975357951: " << LNum("123456789876543212345678987654321") * LNum("159753579515975357951") << '\n';
@@ -956,15 +953,15 @@ int main() {
 
 	// Chipolli alpgorithm
 	/*auto sqrts = chipolli(LNum("34035243914635549601583369544560650254325084643201"), (LNum(10) ^ 50) + 151);
-	if (sqrts.has_value()) 
+	if (sqrts.has_value())
 		cout << get<0>(sqrts.value()) << ' ' << get<1>(sqrts.value()) << endl;*/
 
-	// Chinese remainder solver
-	/*cout << "x = 16 (mod 17)\n";
-	cout << "x = 22 (mod 23)\n";
-	cout << "x = 30 (mod 31)\n";
-	vector<LNum> n = { 17, 23, 31 };
-	vector<LNum> a = { 16, 22, 30 };
-	auto solution = chinese_remainder(n, a);
-	cout << (solution.has_value() ? solution.value().to_str() : "No solution") << endl;*/
+		// Chinese remainder solver
+		/*cout << "x = 16 (mod 17)\n";
+		cout << "x = 22 (mod 23)\n";
+		cout << "x = 30 (mod 31)\n";
+		vector<LNum> n = { 17, 23, 31 };
+		vector<LNum> a = { 16, 22, 30 };
+		auto solution = chinese_remainder(n, a);
+		cout << (solution.has_value() ? solution.value().to_str() : "No solution") << endl;*/
 }
