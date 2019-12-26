@@ -1,4 +1,4 @@
-#include <climits>
+ï»¿#include <climits>
 #include <iostream>
 #include <cmath>
 #include <vector>
@@ -210,7 +210,7 @@ public:
 			curValue = curValue * base;
 
 			curValue.parts[0] = lhs.parts[i];
-			// ïîäáèğàåì ìàêñèìàëüíîå ÷èñëî x, òàêîå ÷òî b * x <= curValue
+			// Ğ¿Ğ¾Ğ´Ğ±Ğ¸Ñ€Ğ°ĞµĞ¼ Ğ¼Ğ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ñ‡Ğ¸ÑĞ»Ğ¾ x, Ñ‚Ğ°ĞºĞ¾Ğµ Ñ‡Ñ‚Ğ¾ b * x <= curValue
 			int64_t x = 0;
 			int64_t l = 0, r = base;
 			while (l <= r) {
@@ -246,7 +246,7 @@ public:
 			curValue = curValue * base;
 
 			curValue.parts[0] = lhs.parts[i];
-			// ïîäáèğàåì ìàêñèìàëüíîå ÷èñëî x, òàêîå ÷òî b * x <= curValue
+			// Ğ¿Ğ¾Ğ´Ğ±Ğ¸Ñ€Ğ°ĞµĞ¼ Ğ¼Ğ°ĞºÑĞ¸Ğ¼Ğ°Ğ»ÑŒĞ½Ğ¾Ğµ Ñ‡Ğ¸ÑĞ»Ğ¾ x, Ñ‚Ğ°ĞºĞ¾Ğµ Ñ‡Ñ‚Ğ¾ b * x <= curValue
 			int64_t x = 0;
 			int64_t l = 0, r = base;
 			while (l <= r) {
@@ -426,7 +426,7 @@ public:
 		return lhs > rhs ? lhs - rhs : rhs - lhs;
 	}
 
-	// Miller–Rabin primality test
+	// Millerâ€“Rabin primality test
 	bool is_prime(int certainty) const {
 		if (*this == 1) return true;
 		if (LNum(2) == *this || LNum(3) == *this)
@@ -901,67 +901,72 @@ string decrypt(vector<LNum> en_msg, LNum p, LNum key, LNum q) {
 	return dr_msg;
 }
 
-
+// â°Â¹Â²Â³â´âµâ¶â·â¸â¹
 int main() {
-	//cout << boolalpha;
+	cout << boolalpha;
 
-	string message = "Hello there!";
-	cout << "Original message: " << message << endl;
-
+	// Tests for ElGamal
+	cout << "ElGamal cryptosystem:\n";
+	string message = "\tHello there!";
+	cout << "\tOriginal message: " << message << endl;
 	LNum q = LNum::random(LNum(10) ^ 20, LNum(10) ^ 50);
 	LNum g = LNum::random(2, q);
 	LNum key = gen_key(q);
 	LNum h = g.pow_mod(key, q);
-
 	vector<LNum> en_msg;
 	LNum p = 0;
 	tie(en_msg, p) = encrypt(message, q, h, g);
-
-	cout << "Decripted message: " << decrypt(en_msg, p, key, q) << endl;
+	cout << "\tDecripted message: " << decrypt(en_msg, p, key, q) << endl;
 
 	// Tests for LNum class
-	//cout << LNum("24523748428").pow_mod(LNum("6500000"), LNum("98723459723")) << '\n';  //88398031434 3007310280
-	//cout << "123456789876543212345678987654321 * 159753579515975357951: " << LNum("123456789876543212345678987654321") * LNum("159753579515975357951") << '\n';
-	//cout << "sqrt(9^40): " << sqrt(LNum("147808829414345923316083210206383297601")).to_str() << '\n';
-	//cout << "9^20: " << (LNum("9")^20).to_str() << '\n';
-	//cout << "10^20+1 > 10^20: " << (((LNum("10")^20) < LNum("10")^20 + 1) ? "true" : "false") << '\n';
-	//cout << "1234567^1234: " << (LNum("1234567") ^ LNum("1234")) << '\n';
+	cout << "24523748428â¶âµâ°â°â°â°â° (mod 98723459723):\n\t";
+	cout << LNum("24523748428").pow_mod(LNum("6500000"), LNum("98723459723")) << "\n";
+	cout << "123456789876543212345678987654321 * 159753579515975357951:\n\t" << LNum("123456789876543212345678987654321") * LNum("159753579515975357951") << '\n';
+	cout << "sqrt(9â´â°):\n\t" << LNum::sqrt(LNum("147808829414345923316083210206383297601")) << '\n';
+	cout << "9Â²â°:\n\t" << (LNum("9") ^ 20).to_str() << '\n';
+	cout << "10Â²â° + 1 > 10Â²â°:\n\t" << (((LNum("10") ^ 20) < LNum("10") ^ 20 + 1) ? "true" : "false") << '\n';
+	cout << "1234567^1234:\n\t" << (LNum("1234567") ^ LNum("1234")) << '\n';
 
 	// Pollard's rho algorithm test
-	/*LNum x("17348256187264213649126346457");
+	cout << "Factorization of 17348256187264213649126346457:\n\t";
+	LNum x("17348256187264213649126346457");
 	for (LNum& factor : ro_pollard(x)) {
 		cout << factor << ' ';
 	}
-	cout << endl;*/
+	cout << endl;
 
 	// Baby-step giant-step algorithm test
-	//cout << babystep_giantstep(3, 1, 196134577) << endl;
+	cout << "xÂ³ â‰¡ 1  (mod 196134577):\n\t";
+	cout << babystep_giantstep(3, 1, 196134577) << endl;
 
 	// Euler function test
-	//cout << totient(1000) << endl;
+	cout << "totient(1000):\n\t";
+	cout << totient(1000) << endl;
 
 	// Mobius function test
-	//cout << mobius(1234891) << endl;
+	cout << "mobius(1234891):\n\t";
+	cout << mobius(1234891) << endl;
 
 	// Legendre symbol test
-	//cout << legendre1(30, 109) << endl;
-	//cout << legendre1(30, 127) << endl;
+	cout << "legendre1(30, 109):\n\t";
+	cout << legendre1(30, 109) << endl;
 
 	// Jacobi symbol test
-	//cout << jacobi(1001, 9907) << endl;
-	//cout << jacobi(19, 45) << endl;
+	cout << "jacobi(1001, 9907):\n\t";
+	cout << jacobi(1001, 9907) << endl;
 
 	// Chipolli alpgorithm
-	/*auto sqrts = chipolli(LNum("34035243914635549601583369544560650254325084643201"), (LNum(10) ^ 50) + 151);
+	cout << "xÂ² â‰¡ 34035243914635549601583369544560650254325084643201 (mod 10âµâ° + 151):\n\t";
+	auto sqrts = chipolli(LNum("34035243914635549601583369544560650254325084643201"), (LNum(10) ^ 50) + 151);
 	if (sqrts.has_value())
-		cout << get<0>(sqrts.value()) << ' ' << get<1>(sqrts.value()) << endl;*/
+		cout << get<0>(sqrts.value()) << ' ' << get<1>(sqrts.value()) << endl;
 
-		// Chinese remainder solver
-		/*cout << "x = 16 (mod 17)\n";
-		cout << "x = 22 (mod 23)\n";
-		cout << "x = 30 (mod 31)\n";
-		vector<LNum> n = { 17, 23, 31 };
-		vector<LNum> a = { 16, 22, 30 };
-		auto solution = chinese_remainder(n, a);
-		cout << (solution.has_value() ? solution.value().to_str() : "No solution") << endl;*/
+	// Chinese remainder solver
+	cout << "x â‰¡ 16 (mod 17)\n";
+	cout << "x â‰¡ 22 (mod 23)\n";
+	cout << "x â‰¡ 30 (mod 31)\n\t";
+	vector<LNum> n = { 17, 23, 31 };
+	vector<LNum> a = { 16, 22, 30 };
+	auto solution = chinese_remainder(n, a);
+	cout << (solution.has_value() ? solution.value().to_str() : "No solution") << endl;
 }
